@@ -60,7 +60,6 @@ Source files are distributed with the repository. `ENGINE_MANIFEST.json` records
 
 The example Slurm script requests one GPU, eight CPU cores, 64 GB of host memory, and one hour. These are scheduling requests, not measured minimum requirements. Users must supply an allocation and a suitable model cache. The runner is single-process and single-GPU; it is not a concurrent inference server.
 
-
 ![Schedule the computation on a GPU node](paper/figures/illustration-01.png)
 
 *Illustration 1. Execution schematic. The compute workload belongs to the allocated GPU node. Resource requests describe scheduling needs and do not establish measured minimum requirements.*
@@ -93,7 +92,6 @@ That target remains constant throughout generation of the chunk. A long trajecto
 
 The runner accepts a native geometry JSON file and supported analysis JSON structures containing emotional coordinates. It recalibrates the basis on the current CUDA runtime even when the imported geometry includes one. With no geometry argument, it uses a demonstration path with three points; this path is not inferred from the input document.
 
-
 ![Align geometry to original document positions](paper/figures/illustration-02.png)
 
 *Illustration 2. Trajectory alignment. The runner stretches or compresses the source path over normalized target positions and may miss unsampled emotional changes.*
@@ -125,7 +123,6 @@ $$
 The three directions form the rows of a matrix $B_\ell\in\mathbb{R}^{3\times1024}$. Calibration captures the final chat-formatted prompt position immediately before `post_attention_layernorm`. It does not average all token positions. All selected layers are captured during the same 24 forward passes: three axes, four pairs, and two members per pair.
 
 Default layers are 8, 16, and 23, using zero-based indexing, with weights 1, 1, and 0.5. This is subtraction, averaging, and normalization; there is no training optimizer, backbone fine-tuning, orthogonalization, or outcome-based fitting. The small calibration set may encode vocabulary, topic, or perspective along with emotion. Normalizing the vectors does not establish that the axes are independent or valid across languages.
-
 
 ![Recalibrate on the current CUDA runtime](paper/figures/illustration-03.png)
 
@@ -194,7 +191,6 @@ $$
 A pre-hook adds $\delta$ to the normalization input; a block-output hook adds the same displacement to the residual result. Adding a vector only after an unchanged feed-forward computation would have a different effect. Only the final prompt position is modified during prefill; cached decoding modifies the current generated position. The module does not wait for specific words or phrases. Generation hooks are removed in a `finally` block.
 
 This is an open-loop intervention. Coefficients come from the requested absolute coordinates, not the difference between a measured output emotion and the target. A zero coefficient adds no intervention on that axis; it does not actively neutralize emotion already expressed by the model.
-
 
 ![Separate activation controls from token sampling](paper/figures/illustration-04.png)
 
@@ -267,7 +263,6 @@ After each processed chunk, the runner writes:
 Successful generation records include stopping reason, token count, elapsed time, activation-injection count, and mean displacement RMS. Attempt records retain returned drafts, effective controls, detected issues, and exceptions where applicable. At normal completion the report adds failure and review counts. `complete` means every chunk was processed, not that every chunk was successfully rewritten or emotionally accurate.
 
 JSON writes use temporary-file replacement. The companion text file is written normally and may be incomplete if interrupted during that write. Reports are incremental records, not automatic resume checkpoints: rerunning starts over and overwrites the selected output paths. Use a distinct output filename for each experiment. Reports contain the input text and should be treated as document-bearing artifacts.
-
 
 ![A failed chunk does not end the document](paper/figures/illustration-05.png)
 
