@@ -9,24 +9,6 @@ Email: wtaggart@vt.edu
 
 AFFECTOR-ARC is an experimental command-line system for rewriting text under a user-defined emotional trajectory. It runs a frozen Qwen3.5-0.8B model on an NVIDIA GPU and changes selected internal activations during generation. A trajectory specifies valence, inward/outward emotional orientation, and intensity across normalized document position. Small sets of contrasting English passages establish three activation directions at each selected transformer layer. At inference time, the requested coordinates determine a weighted displacement, scaled relative to the current hidden-state magnitude, smoothed across decoding steps, and constrained by an RMS budget. Paired hooks apply this displacement to both the feed-forward input and its residual path. Document rewriting combines these interventions with four editing styles, sentence-aware segmentation, bounded generation, and incremental reporting. This report derives the mechanism from its implemented operations and distinguishes numerical controls from emotional outcomes. CPU policy tests pass; the current revision still requires CUDA validation. No measured claim of emotional accuracy, semantic preservation, or multilingual effectiveness is made.
 
-## Application interface
-
-![Connection workspace with SSH settings and the Slurm GPU resource request. The client is offline in this capture.](figures/screenshot-01.png)
-
-*Connection workspace with SSH settings and the Slurm GPU resource request. The client is offline in this capture.*
-
-![Document workspace displaying an existing Little Red Riding Hood input and rewrite.](figures/screenshot-02.png)
-
-*Document workspace displaying an existing Little Red Riding Hood input and rewrite.*
-
-![Geometry and weights editor with the trajectory and activation-steering controls.](figures/screenshot-03.png)
-
-*Geometry and weights editor with the trajectory and activation-steering controls.*
-
-![Jobs and results controls in the offline client; the report pane has no loaded report.](figures/screenshot-04.png)
-
-*Jobs and results controls in the offline client; the report pane has no loaded report.*
-
 ## Literature review: activation steering and emotion
 
 This focused review covers twelve papers, emphasizing 2025-2026 research and retaining two methodological foundations. Titles, author lists, version histories, and the claims summarized here were checked against arXiv records and the corresponding paper text on November 13, 2026. The cited versions are fixed below; availability on arXiv alone does not establish peer review. The implications for this project are research motivations, not evidence that its implementation reproduces these results.
@@ -47,6 +29,9 @@ This focused review covers twelve papers, emphasizing 2025-2026 research and ret
 
 A language model generates text by repeatedly estimating a distribution over the next token. Its intermediate hidden states are numerical vectors that contribute to those estimates. Changing a hidden state can change the continuation even when the input text and the model's stored parameters remain fixed.
 
+![Document workspace displaying an existing Little Red Riding Hood input and rewrite.](figures/screenshot-02.png)
+
+*Document workspace displaying an existing Little Red Riding Hood input and rewrite.*
 AFFECTOR-ARC uses this property to influence the emotional expression of a rewrite. The user supplies an input document and a sequence of emotional coordinates. The software maps positions in the input to positions on that sequence, converts the coordinates into activation displacements, and applies the displacements while generating each rewritten passage.
 
 The term **geometry** means an ordered path through a three-dimensional coordinate space, together with layer settings and optional calibration matrices. It does not mean that the software reconstructs a solid surface or applies geometric constraints directly to words. A text's emotional interpretation, a numerical target, and a model's hidden states are distinct objects. The calibration is an experimental mapping between them.
@@ -62,6 +47,9 @@ The interface is a command-line runner for a CUDA allocation. It does not provid
 
 The runner loads `Qwen/Qwen3.5-0.8B` at revision `2fc06364715b967f1860aea9cf38778875588b17`. The implementation uses `Qwen3_5ForConditionalGeneration`, its text decoder layers, float32 computation, eager attention, and the first process-visible CUDA device. It checks for 24 decoder layers; the geometry and calibration code assume hidden width 1,024. The backbone is in evaluation mode, its parameters have gradients disabled, and calibration and generation run without gradient tracking.
 
+![Connection workspace with SSH settings and the Slurm GPU resource request. The client is offline in this capture.](figures/screenshot-01.png)
+
+*Connection workspace with SSH settings and the Slurm GPU resource request. The client is offline in this capture.*
 The execution sequence is:
 
 ```text
@@ -110,7 +98,6 @@ That target remains constant throughout generation of the chunk. A long trajecto
 
 The runner accepts a native geometry JSON file and supported analysis JSON structures containing emotional coordinates. It recalibrates the basis on the current CUDA runtime even when the imported geometry includes one. With no geometry argument, it uses a demonstration path with three points; this path is not inferred from the input document.
 
-
 ## 4. Estimating activation directions
 
 A hidden state at a selected layer is a vector in $\mathbb{R}^{1024}$. To estimate a direction associated with one emotional contrast, the system compares the model's states for paired passages that differ in the desired property.
@@ -139,11 +126,13 @@ The three directions form the rows of a matrix $B_\ell\in\mathbb{R}^{3\times1024
 
 Default layers are 8, 16, and 23, using zero-based indexing, with weights 1, 1, and 0.5. This is subtraction, averaging, and normalization; there is no training optimizer, backbone fine-tuning, orthogonalization, or outcome-based fitting. The small calibration set may encode vocabulary, topic, or perspective along with emotion. Normalizing the vectors does not establish that the axes are independent or valid across languages.
 
-
 ## 5. From coordinates to bounded displacements
 
 ### 5.1 Selecting and weighting axes
 
+![Geometry and weights editor with the trajectory and activation-steering controls.](figures/screenshot-03.png)
+
+*Geometry and weights editor with the trajectory and activation-steering controls.*
 Let $T$ be axis temperature. Each coordinate first receives magnitude
 
 $$
@@ -204,7 +193,6 @@ A pre-hook adds $\delta$ to the normalization input; a block-output hook adds th
 
 This is an open-loop intervention. Coefficients come from the requested absolute coordinates, not the difference between a measured output emotion and the target. A zero coefficient adds no intervention on that axis; it does not actively neutralize emotion already expressed by the model.
 
-
 ## 6. User controls and rewrite instructions
 
 | Control | Default without an imported override | Function |
@@ -264,6 +252,9 @@ Sentence cleanup prevents chopped words from being joined directly to the next p
 
 Each chunk receives one generation attempt at the requested activation settings. A caught generation exception is recorded; the original chunk remains in the assembled text and processing continues. Calibration failures, invalid inputs, filesystem failures, and process termination are outside this per-chunk recovery mechanism and can stop a run. A persistent device failure may cause subsequent chunks to fail as well.
 
+![Jobs and results controls in the offline client; the report pane has no loaded report.](figures/screenshot-04.png)
+
+*Jobs and results controls in the offline client; the report pane has no loaded report.*
 After each processed chunk, the runner writes:
 
 1. An atomic JSON report containing the input, geometry, calibration basis, runtime identity, style, sampling settings, character spans, target coordinates, and per-chunk records.
@@ -272,7 +263,6 @@ After each processed chunk, the runner writes:
 Successful generation records include stopping reason, token count, elapsed time, activation-injection count, and mean displacement RMS. Attempt records retain returned drafts, effective controls, detected issues, and exceptions where applicable. At normal completion the report adds failure and review counts. `complete` means every chunk was processed, not that every chunk was successfully rewritten or emotionally accurate.
 
 JSON writes use temporary-file replacement. The companion text file is written normally and may be incomplete if interrupted during that write. Reports are incremental records, not automatic resume checkpoints: rerunning starts over and overwrites the selected output paths. Use a distinct output filename for each experiment. Reports contain the input text and should be treated as document-bearing artifacts.
-
 
 ## 9. Engineering checks and evidence
 
