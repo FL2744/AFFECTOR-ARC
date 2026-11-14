@@ -1,0 +1,37 @@
+[
+  {
+    "number": 1,
+    "title": "Schedule the computation on a GPU node",
+    "caption": "Execution schematic. The compute workload belongs to the allocated GPU node. Resource requests describe scheduling needs and do not establish measured minimum requirements.",
+    "section_preceded": "Emotional coordinates and trajectory interpolation",
+    "provenance": "Explanatory schematic derived from the report; not a screenshot or new experiment."
+  },
+  {
+    "number": 2,
+    "title": "Align geometry to original document positions",
+    "caption": "Trajectory alignment. The runner stretches or compresses the source path over normalized target positions and may miss unsampled emotional changes.",
+    "section_preceded": "Estimating activation directions",
+    "provenance": "Explanatory schematic derived from the report; not a screenshot or new experiment."
+  },
+  {
+    "number": 3,
+    "title": "Recalibrate on the current CUDA runtime",
+    "caption": "Calibration schematic. The runner recalibrates the imported trajectory on the current runtime. The contrast basis is an experimental numerical control, not a validated multilingual emotion scale.",
+    "section_preceded": "From coordinates to bounded displacements",
+    "provenance": "Explanatory schematic derived from the report; not a screenshot or new experiment."
+  },
+  {
+    "number": 4,
+    "title": "Separate activation controls from token sampling",
+    "caption": "Two distinct control paths. Axis selection modifies activation coefficients before generation scores; token sampling operates afterward on the vocabulary distribution.",
+    "section_preceded": "User controls and rewrite instructions",
+    "provenance": "Explanatory schematic derived from the report; not a screenshot or new experiment."
+  },
+  {
+    "number": 5,
+    "title": "A failed chunk does not end the document",
+    "caption": "Output lifecycle schematic. Bounded generation, complete-prefix selection, diagnostics and per-chunk continuation address specific failure modes; they do not guarantee emotional fit or preservation of all content.",
+    "section_preceded": "Engineering checks and evidence",
+    "provenance": "Explanatory schematic derived from the report; not a screenshot or new experiment."
+  }
+]
