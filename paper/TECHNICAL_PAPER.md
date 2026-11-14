@@ -325,15 +325,15 @@ Changing to a larger model requires new architecture validation, basis calibrati
 
 This report describes the repository's executable operations rather than relying on another application's interface or documentation.
 
-- [CUDA runner and smoke protocol](run_arc.py)
-- [Document transformation and incremental output](document_run.py)
-- [Calibration, displacement math, hooks, and decoding](engine/steering.py)
-- [Geometry schema and interpolation](engine/geometry.py)
-- [Segmentation and character allowance](engine/documents.py)
-- [Rewrite system prompts](engine/rewrite_policy.py)
-- [Repetition detection and draft salvage](engine/generation.py)
-- [Engine source hashes](ENGINE_MANIFEST.json)
-- [Generation policy tests](tests/test_generation.py) and [document-run tests](tests/test_document_run.py)
+- [CUDA runner and smoke protocol](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/run_arc.py)
+- [Document transformation and incremental output](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/document_run.py)
+- [Calibration, displacement math, hooks, and decoding](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/engine/steering.py)
+- [Geometry schema and interpolation](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/engine/geometry.py)
+- [Segmentation and character allowance](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/engine/documents.py)
+- [Rewrite system prompts](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/engine/rewrite_policy.py)
+- [Repetition detection and draft salvage](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/engine/generation.py)
+- [Engine source hashes](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/ENGINE_MANIFEST.json)
+- [Generation policy tests](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/tests/test_generation.py) and [document-run tests](https://huggingface.co/will-taggart/AFFECTOR-ARC/blob/main/tests/test_document_run.py)
 
 ## AI assistance disclosure
 
