@@ -1,6 +1,6 @@
 # AFFECTOR-ARC illustrated technical report
 
-[PDF](AFFECTOR-ARC-ACM.pdf) · [ACM LaTeX](AFFECTOR-ARC-ACM.tex) · [Markdown](TECHNICAL_PAPER.md) · [Illustrations](figures/)
+**Technical paper:** [PDF](AFFECTOR-ARC-ACM.pdf) · [LaTeX](AFFECTOR-ARC-ACM.tex) · [Markdown](TECHNICAL_PAPER.md) · [Illustrations](figures/)
 
 Five tightly cropped, reproducible technical diagrams explain the mechanisms described in the report. These are explanatory schematics, not application screenshots or new experimental results. The existing literature and scientific qualifications are retained. AI disclosure precedes references.
 
